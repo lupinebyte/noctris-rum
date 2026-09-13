@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>noctris-rum — manual test harness</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 60px auto; line-height: 1.6; }
+  button { display: block; width: 100%; margin-bottom: 10px; padding: 10px; cursor: pointer; }
+  pre { background: #111; color: #0f0; padding: 12px; font-size: 12px; overflow-x: auto; }
+</style>
+</head>
+<body>
+  <h1>noctris-rum test harness</h1>
+  <p>
+    Open devtools → Network tab and watch requests to <code>/rum/events</code> as you click below.
+    This page points <code>data-noctris-endpoint</code> at a local mock; swap it for a real ingest
+    URL to test end-to-end.
+  </p>
+
+  <button onclick="throwSyncError()">Throw a sync error</button>
+  <button onclick="rejectPromise()">Trigger unhandled promise rejection</button>
+  <button onclick="failedFetch()">Trigger a failed fetch (404)</button>
+  <button onclick="slowFetch()">Trigger a slow fetch</button>
+  <button onclick="window.__noctrisFlush && window.__noctrisFlush()">Force flush now</button>
+
+  <h3>Captured payloads (mock endpoint)</h3>
+  <pre id="log">Waiting...</pre>
+
+  <!-- Point this at your local dist build during development -->
+  <script
+    src="../dist/v1/noctris-rum.js"
+    data-noctris-key="test_key_local"
+    data-noctris-endpoint="http://localhost:4000/rum/events"
+    data-noctris-sample-rate="1"
+    async
+  ></script>
+
+  <script>
+    function throwSyncError() {
+      undefinedFunctionThatDoesNotExist();
+    }
+    function rejectPromise() {
+      Promise.reject(new Error("Manual test rejection"));
+    }
+    function failedFetch() {
+      fetch("/this-route-does-not-exist");
+    }
+    function slowFetch() {
+      fetch("https://httpstat.us/200?sleep=3000");
+    }
+
+    // Simple mock server logger via BroadcastChannel would need a real
+    // backend; for a quick local check, run any static server that logs
+    // POST bodies to localhost:4000/rum/events.
+  </script>
+</body>
+</html>
