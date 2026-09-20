@@ -3,9 +3,9 @@ import { cleanUrl, fingerprint } from "../src/util.js";
 
 describe("cleanUrl", () => {
   it("strips query string by default", () => {
-    expect(cleanUrl("https://app.example.com/checkout?ref=abc&token=xyz", false)).toBe(
-      "https://app.example.com/checkout"
-    );
+    expect(
+      cleanUrl("https://app.example.com/checkout?ref=abc&token=xyz", false),
+    ).toBe("https://app.example.com/checkout");
   });
 
   it("preserves query string when capture is enabled", () => {

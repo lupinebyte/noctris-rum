@@ -15,7 +15,8 @@ export function setupErrorCapture(enqueue, baseFields, captureQuery) {
       evt.source_url = source ? cleanUrl(source, captureQuery) : "";
       evt.line = lineno || 0;
       evt.column = colno || 0;
-      evt.stack = error && error.stack ? String(error.stack).slice(0, 2000) : "";
+      evt.stack =
+        error && error.stack ? String(error.stack).slice(0, 2000) : "";
       evt.fingerprint = fingerprint("js_error", message, source + ":" + lineno);
       enqueue(evt);
     } catch (e) {
@@ -35,12 +36,13 @@ export function setupErrorCapture(enqueue, baseFields, captureQuery) {
         reason && reason.message
           ? reason.message
           : typeof reason === "string"
-          ? reason
-          : "Unhandled promise rejection";
+            ? reason
+            : "Unhandled promise rejection";
       var evt = baseFields();
       evt.event_type = "unhandled_rejection";
       evt.message = String(message).slice(0, 500);
-      evt.stack = reason && reason.stack ? String(reason.stack).slice(0, 2000) : "";
+      evt.stack =
+        reason && reason.stack ? String(reason.stack).slice(0, 2000) : "";
       evt.fingerprint = fingerprint("unhandled_rejection", message, "");
       enqueue(evt);
     } catch (e) {

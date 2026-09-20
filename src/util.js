@@ -19,5 +19,7 @@ export function cleanUrl(url, captureQuery) {
  * dashboard grouping / spike detection).
  */
 export function fingerprint(eventType, message, source) {
-  return eventType + "|" + String(message || "").slice(0, 120) + "|" + (source || "");
+  return (
+    eventType + "|" + String(message || "").slice(0, 120) + "|" + (source || "")
+  );
 }
