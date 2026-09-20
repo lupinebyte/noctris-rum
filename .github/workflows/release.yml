@@ -40,30 +40,32 @@ jobs:
             --endpoint-url https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --content-type "application/javascript" \
-            --cache-control "public, max-age=86400"
+            --cache-control "public, max-age=3600"
 
           aws s3 cp dist/v1/noctris-rum.min.js \
             s3://noctris-rum/v1/noctris-rum.min.js \
             --endpoint-url https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --content-type "application/javascript" \
-            --cache-control "public, max-age=86400"
+            --cache-control "public, max-age=3600"
 
           aws s3 cp dist/v1/noctris-rum.min.js.map \
             s3://noctris-rum/v1/noctris-rum.min.js.map \
             --endpoint-url https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --content-type "application/json" \
-            --cache-control "public, max-age=86400"
+            --cache-control "public, max-age=3600"
 
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      - name: Purge CDN cache for noctris-rum assets
-        run: |
-          doctl compute cdn flush ${{ vars.DO_CDN_ENDPOINT_ID }} --files \
-            noctris-rum/v1/noctris-rum.js \
-            noctris-rum/v1/noctris-rum.min.js \
-            noctris-rum/v1/noctris-rum.min.js.map
+  handle_failure:
+    name: Handle failure of any job
+    needs: [release]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Failure handler
+        uses: rtCamp/action-slack-notify@33ca3be66c6f378fe1610fd1d5258632dbed5e58
+        env:
+          SLACK_CHANNEL: dev-builds
+          SLACK_WEBHOOK: ${{ secrets.DEV_BUILDS_SLACK_WEBHOOK }}
+          SLACK_TITLE: "BUILD FAILURE: Noctris RUM"
+          SLACK_COLOR: danger

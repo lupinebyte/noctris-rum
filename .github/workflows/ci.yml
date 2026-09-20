@@ -21,3 +21,17 @@ jobs:
       - run: npm run format:check
       - run: npm test
       - run: npm run build
+
+  handle_failure:
+    name: Handle failure of any job
+    needs: [check]
+    if: ${{ failure() && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Failure handler
+        uses: rtCamp/action-slack-notify@33ca3be66c6f378fe1610fd1d5258632dbed5e58
+        env:
+          SLACK_CHANNEL: dev-builds
+          SLACK_WEBHOOK: ${{ secrets.DEV_BUILDS_SLACK_WEBHOOK }}
+          SLACK_TITLE: "BUILD FAILURE: Noctris RUM"
+          SLACK_COLOR: danger
