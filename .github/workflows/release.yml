@@ -36,21 +36,21 @@ jobs:
       - name: Upload to Spaces (rum/v1/)
         run: |
           aws s3 cp dist/v1/noctris-rum.js \
-            s3://noctris/rum/v1/noctris-rum.js \
+            s3://noctris-rum/v1/noctris-rum.js \
             --endpoint-url https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --content-type "application/javascript" \
             --cache-control "public, max-age=86400"
 
           aws s3 cp dist/v1/noctris-rum.min.js \
-            s3://noctris/rum/v1/noctris-rum.min.js \
+            s3://noctris-rum/v1/noctris-rum.min.js \
             --endpoint-url https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --content-type "application/javascript" \
             --cache-control "public, max-age=86400"
 
           aws s3 cp dist/v1/noctris-rum.min.js.map \
-            s3://noctris/rum/v1/noctris-rum.min.js.map \
+            s3://noctris-rum/v1/noctris-rum.min.js.map \
             --endpoint-url https://sfo3.digitaloceanspaces.com \
             --acl public-read \
             --content-type "application/json" \
@@ -64,6 +64,6 @@ jobs:
       - name: Purge CDN cache for noctris-rum assets
         run: |
           doctl compute cdn flush ${{ vars.DO_CDN_ENDPOINT_ID }} --files \
-            noctris/rum/v1/noctris-rum.js \
-            noctris/rum/v1/noctris-rum.min.js \
-            noctris/rum/v1/noctris-rum.min.js.map
+            noctris-rum/v1/noctris-rum.js \
+            noctris-rum/v1/noctris-rum.min.js \
+            noctris-rum/v1/noctris-rum.min.js.map
