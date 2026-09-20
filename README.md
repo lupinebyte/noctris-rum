@@ -24,7 +24,7 @@ the script executes.
 | Attribute                        | Default                                  | Description                                                              |
 | --------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
 | `data-noctris-key`                 | *(required)*                              | Your org's API key.                                                        |
-| `data-noctris-endpoint`            | `https://ingest.noctris.io/rum/events`    | Override for self-hosted or regional ingest endpoints.                     |
+| `data-noctris-base-url`            | `https://api.noctris.io/v1`               | Override API base for config + events (paths `/rum/config`, `/rum/events`). |
 | `data-noctris-capture-query`       | `false`                                   | Set `"true"` to preserve query strings in captured URLs (off by default for privacy). |
 | `data-noctris-sample-rate`         | `1`                                       | 0.0–1.0. Sampling applied to successful network timing events only — errors are always captured. |
 

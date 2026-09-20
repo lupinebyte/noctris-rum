@@ -37,7 +37,11 @@ describe("queue", () => {
   it("rate-limits repeated events sharing a fingerprint", () => {
     const queue = makeQueue({ maxBatchSize: 100, maxEventsPerFingerprint: 3 });
     for (let i = 0; i < 10; i++) {
-      queue.enqueue({ event_type: "js_error", message: "spam", fingerprint: "same_fp" });
+      queue.enqueue({
+        event_type: "js_error",
+        message: "spam",
+        fingerprint: "same_fp",
+      });
     }
     queue.flush(false);
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);

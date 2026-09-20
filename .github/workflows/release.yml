@@ -1,0 +1,69 @@
+name: Release
+
+# Triggers on tags like v1.0.1, v1.2.0, etc.
+# Push to the SAME versioned CDN path (rum/v1/...) for non-breaking
+# releases so embedded customers pick up fixes automatically.
+# Only bump the path (rum/v2/...) for breaking payload/behavior changes.
+on:
+  push:
+    tags:
+      - "v1.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Configure DigitalOcean Spaces credentials
+        run: |
+          mkdir -p ~/.aws
+          cat <<EOF > ~/.aws/credentials
+          [default]
+          aws_access_key_id = ${{ secrets.DO_SPACES_KEY }}
+          aws_secret_access_key = ${{ secrets.DO_SPACES_SECRET }}
+          EOF
+
+      - name: Upload to Spaces (rum/v1/)
+        run: |
+          aws s3 cp dist/v1/noctris-rum.js \
+            s3://noctris/rum/v1/noctris-rum.js \
+            --endpoint-url https://sfo3.digitaloceanspaces.com \
+            --acl public-read \
+            --content-type "application/javascript" \
+            --cache-control "public, max-age=86400"
+
+          aws s3 cp dist/v1/noctris-rum.min.js \
+            s3://noctris/rum/v1/noctris-rum.min.js \
+            --endpoint-url https://sfo3.digitaloceanspaces.com \
+            --acl public-read \
+            --content-type "application/javascript" \
+            --cache-control "public, max-age=86400"
+
+          aws s3 cp dist/v1/noctris-rum.min.js.map \
+            s3://noctris/rum/v1/noctris-rum.min.js.map \
+            --endpoint-url https://sfo3.digitaloceanspaces.com \
+            --acl public-read \
+            --content-type "application/json" \
+            --cache-control "public, max-age=86400"
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Purge CDN cache for noctris-rum assets
+        run: |
+          doctl compute cdn flush ${{ vars.DO_CDN_ENDPOINT_ID }} --files \
+            noctris/rum/v1/noctris-rum.js \
+            noctris/rum/v1/noctris-rum.min.js \
+            noctris/rum/v1/noctris-rum.min.js.map

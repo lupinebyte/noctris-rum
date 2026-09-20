@@ -13,7 +13,7 @@
   <h1>noctris-rum test harness</h1>
   <p>
     Open devtools → Network tab and watch requests to <code>/rum/events</code> as you click below.
-    This page points <code>data-noctris-endpoint</code> at a local mock; swap it for a real ingest
+    This page points <code>data-noctris-base-url</code> at a local mock; swap it for a real ingest
     URL to test end-to-end.
   </p>
 
@@ -30,7 +30,7 @@
   <script
     src="../dist/v1/noctris-rum.js"
     data-noctris-key="test_key_local"
-    data-noctris-endpoint="http://localhost:4000/rum/events"
+    data-noctris-base-url="http://localhost:4000"
     data-noctris-sample-rate="1"
     async
   ></script>
@@ -46,7 +46,7 @@
       fetch("/this-route-does-not-exist");
     }
     function slowFetch() {
-      fetch("https://httpstat.us/200?sleep=3000");
+      fetch("https://glowostat.us/200?sleep=3000");
     }
 
     // Simple mock server logger via BroadcastChannel would need a real

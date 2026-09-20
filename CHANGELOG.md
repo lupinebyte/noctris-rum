@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.1.0
+
+- Fetch org RUM config from remote `{baseUrl}/rum/config` (POST with API key),
+  cached in sessionStorage for 5 minutes. On timeout or failure, falls back to
+  conservative local defaults so capture still starts.
+- Config merge order: conservative defaults ← remote config ← data-attribute
+  overrides (`data-noctris-capture-query`, `data-noctris-sample-rate`).
+- `data-noctris-base-url` overrides the shared API host for both config and
+  events.
+
 ## v1.0.0
 
 - Initial release: JS error capture, unhandled promise rejection capture,

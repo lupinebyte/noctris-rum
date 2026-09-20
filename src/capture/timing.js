@@ -6,14 +6,18 @@ export function setupTimingCapture(enqueue, baseFields) {
   window.addEventListener("load", function () {
     try {
       setTimeout(function () {
-        var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+        var nav =
+          performance.getEntriesByType &&
+          performance.getEntriesByType("navigation")[0];
         if (!nav) return;
 
         var evt = baseFields();
         evt.event_type = "page_load";
         evt.message = "Page load";
         evt.ttfb_ms = Math.round(nav.responseStart - nav.requestStart);
-        evt.dom_content_loaded_ms = Math.round(nav.domContentLoadedEventEnd - nav.startTime);
+        evt.dom_content_loaded_ms = Math.round(
+          nav.domContentLoadedEventEnd - nav.startTime,
+        );
         evt.load_complete_ms = Math.round(nav.loadEventEnd - nav.startTime);
         enqueue(evt);
       }, 0);
