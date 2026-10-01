@@ -10,7 +10,7 @@ import {
   resolveConfig,
 } from "./config.js";
 
-var BASE_URL = "https://api.noctris.io/v1";
+var BASE_URL = "https://api.noctris.io";
 
 (async function init() {
   var scriptTag =

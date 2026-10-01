@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1
+
+- `BASE_URL` / `data-noctris-base-url` is now the API host only
+  (`https://api.noctris.io`). The `/v1` API major version is hardcoded in
+  paths: `{baseUrl}/v1/rum/config` and `{baseUrl}/v1/rum/events`.
+
 ## v1.1.0
 
 - Fetch org RUM config from remote `{baseUrl}/rum/config` (POST with API key),

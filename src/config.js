@@ -18,11 +18,11 @@ export var CONSERVATIVE_DEFAULTS = {
 
 /**
  * Build conservative defaults for a given API base URL.
- * Paths: `{baseUrl}/rum/events`
+ * Paths: `{baseUrl}/v1/rum/events` (API major version is hardcoded).
  */
 export function conservativeDefaults(baseUrl) {
   return Object.assign({}, CONSERVATIVE_DEFAULTS, {
-    endpoint: baseUrl + "/rum/events",
+    endpoint: baseUrl + "/v1/rum/events",
   });
 }
 
@@ -31,7 +31,7 @@ export function conservativeDefaults(baseUrl) {
  * 5 minutes. Never blocks page load longer than FETCH_TIMEOUT_MS —
  * on any failure returns `fallback` so capture still starts.
  *
- * Config path: `{baseUrl}/rum/config`
+ * Config path: `{baseUrl}/v1/rum/config`
  */
 export async function fetchRemoteConfig(apiKey, fallback, baseUrl) {
   try {
@@ -57,7 +57,7 @@ export async function fetchRemoteConfig(apiKey, fallback, baseUrl) {
       controller.abort();
     }, FETCH_TIMEOUT_MS);
 
-    var res = await fetch(baseUrl + "/rum/config", {
+    var res = await fetch(baseUrl + "/v1/rum/config", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ api_key: apiKey }),
