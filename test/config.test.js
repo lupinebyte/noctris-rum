@@ -6,12 +6,12 @@ import {
   resolveConfig,
 } from "../src/config.js";
 
-var BASE_URL = "https://api.noctris.io/v1";
+var BASE_URL = "https://api.noctris.io";
 
 describe("conservativeDefaults", () => {
   it("builds the events endpoint from the base URL", () => {
     expect(conservativeDefaults(BASE_URL).endpoint).toBe(
-      BASE_URL + "/rum/events",
+      BASE_URL + "/v1/rum/events",
     );
   });
 
@@ -53,7 +53,7 @@ describe("resolveConfig", () => {
 
   it("builds events endpoint from an overridden base URL", () => {
     var local = conservativeDefaults("http://localhost:4000");
-    expect(local.endpoint).toBe("http://localhost:4000/rum/events");
+    expect(local.endpoint).toBe("http://localhost:4000/v1/rum/events");
   });
 });
 
@@ -134,7 +134,7 @@ describe("fetchRemoteConfig", () => {
 
     await fetchRemoteConfig("key with spaces", fallback, BASE_URL);
 
-    expect(fetchMock.mock.calls[0][0]).toBe(BASE_URL + "/rum/config");
+    expect(fetchMock.mock.calls[0][0]).toBe(BASE_URL + "/v1/rum/config");
     expect(fetchMock.mock.calls[0][1]).toMatchObject({
       method: "POST",
       headers: { "Content-Type": "application/json" },
