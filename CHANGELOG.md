@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.2
+
+- Flush events with `fetch(keepalive)` only — drop `sendBeacon` on tab-hide.
+  Avoids CORS failures when the API returns `Access-Control-Allow-Origin: *`
+  (`sendBeacon` always uses credentials mode `include`). Requests now use
+  `credentials: "omit"`.
+
 ## v1.1.1
 
 - `BASE_URL` / `data-noctris-base-url` is now the API host only

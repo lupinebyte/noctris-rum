@@ -3,7 +3,7 @@
  *  - buffers events in memory
  *  - flushes on an interval, when the batch fills up, or on tab-hide
  *  - rate-limits repeated identical events per session (error storms)
- *  - prefers sendBeacon on page-hide, falls back to fetch(keepalive)
+ *  - uses fetch(keepalive) so flushes can complete after unload
  */
 export function createQueue(config) {
   var endpoint = config.endpoint;
@@ -22,23 +22,13 @@ export function createQueue(config) {
       if (fingerprintCounts[fp] > maxEventsPerFingerprint) return;
     }
     queue.push(event);
-    if (queue.length >= maxBatchSize) flush(false);
+    if (queue.length >= maxBatchSize) flush();
   }
 
-  function flush(useBeacon) {
+  function flush() {
     if (queue.length === 0) return;
     var payload = JSON.stringify({ api_key: apiKey, events: queue });
     queue = [];
-
-    try {
-      if (useBeacon && navigator.sendBeacon) {
-        var blob = new Blob([payload], { type: "application/json" });
-        navigator.sendBeacon(endpoint, blob);
-        return;
-      }
-    } catch (e) {
-      // fall through to fetch
-    }
 
     try {
       fetch(endpoint, {
@@ -46,6 +36,7 @@ export function createQueue(config) {
         headers: { "Content-Type": "application/json" },
         body: payload,
         keepalive: true,
+        credentials: "omit",
       }).catch(function () {
         /* swallow — don't retry, avoid loops */
       });
@@ -54,15 +45,13 @@ export function createQueue(config) {
     }
   }
 
-  var intervalHandle = setInterval(function () {
-    flush(false);
-  }, flushIntervalMs);
+  var intervalHandle = setInterval(flush, flushIntervalMs);
 
   document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === "hidden") flush(true);
+    if (document.visibilityState === "hidden") flush();
   });
   window.addEventListener("pagehide", function () {
-    flush(true);
+    flush();
   });
 
   return {

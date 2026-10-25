@@ -43,7 +43,7 @@ describe("queue", () => {
         fingerprint: "same_fp",
       });
     }
-    queue.flush(false);
+    queue.flush();
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.events.length).toBe(3);
     queue._stop();
@@ -54,7 +54,7 @@ describe("queue", () => {
     for (let i = 0; i < 6; i++) {
       queue.enqueue({ event_type: "page_load", message: "load" });
     }
-    queue.flush(false);
+    queue.flush();
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body.events.length).toBe(6);
     queue._stop();
@@ -62,7 +62,7 @@ describe("queue", () => {
 
   it("does nothing on flush when the queue is empty", () => {
     const queue = makeQueue();
-    queue.flush(false);
+    queue.flush();
     expect(fetchMock).not.toHaveBeenCalled();
     queue._stop();
   });
